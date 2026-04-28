@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Interview Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            padding: 10px 0;
+            border-left: 4px solid #0066cc;
+            padding-left: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .scale-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .scale-input {
+            width: auto;
+            padding: 8px 12px;
+            flex: 0 0 auto;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #0052a3;
+        }
+
+        .btn-submit:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .required {
+            color: #cc0000;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-message" id="successMessage">
+            ✓ Interview notes saved successfully! Your markdown file is being synced to Google Drive.
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <h1>Parent Interview</h1>
+        <p class="subtitle">Activity Discovery & Family App Validation</p>
+
+        <form id="interviewForm">
+            <!-- BEFORE DEMO SECTION -->
+            <div class="section">
+                <div class="section-title">BEFORE DEMO</div>
+
+                <div class="form-group">
+                    <label for="name">Parent Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="town">Town/City <span class="required">*</span></label>
+                    <input type="text" id="town" name="town" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kids (age and gender) <span class="required">*</span></label>
+                    <p class="help-text">For each child, note their age and gender (e.g., "Boy Age 6" or "Girl Age 3")</p>
+                    <div id="kidsContainer">
+                        <input type="text" name="kids" placeholder="Kid 1: [Gender] Age [#]" class="form-group-input">
+                    </div>
+                    <button type="button" onclick="addKidField()" style="width: 100%; margin-top: 8px; background: #f0f0f0; color: #333; padding: 8px; border: 1px solid #ddd;">+ Add another child</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentActivityTypes">Current Activity Types <span class="required">*</span></label>
+                    <p class="help-text">What kinds of activities do your kids currently do? (e.g., sports, arts, outdoor, unstructured play)</p>
+                    <textarea id="currentActivityTypes" name="currentActivityTypes" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentDiscoveryMethods">Current Discovery Methods <span class="required">*</span></label>
+                    <p class="help-text">How do you currently find activities?</p>
+                    <textarea id="currentDiscoveryMethods" name="currentDiscoveryMethods" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentInfoSources">Current Information Sources <span class="required">*</span></label>
+                    <p class="help-text">What sources do you use? (e.g., Google, Facebook Groups, word of mouth, local paper)</p>
+                    <textarea id="currentInfoSources" name="currentInfoSources" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="discoveryFrustrations">Discovery Frustrations <span class="required">*</span></label>
+                    <p class="help-text">What frustrates you most about finding activities?</p>
+                    <textarea id="discoveryFrustrations" name="discoveryFrustrations" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="spontaneousPlanningProcess">Spontaneous Planning Process <span class="required">*</span></label>
+                    <p class="help-text">If it's a basic day, you've got nothing planned, and you want to do something with your kids spontaneously, what do you do?</p>
+                    <textarea id="spontaneousPlanningProcess" name="spontaneousPlanningProcess" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="spontaneousDiscoveryDifficulty">Spontaneous Discovery Difficulty <span class="required">*</span></label>
+                    <p class="help-text">How easy or difficult is it to find something spontaneous to do?</p>
+                    <select id="spontaneousDiscoveryDifficulty" name="spontaneousDiscoveryDifficulty" required>
+                        <option value="">-- Select --</option>
+                        <option value="1">1 (Very easy)</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5 (Very difficult)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="spontaneousDiscoveryNotes">Spontaneous Difficulty Notes</label>
+                    <p class="help-text">Why did you choose that number? What makes it hard/easy?</p>
+                    <textarea id="spontaneousDiscoveryNotes" name="spontaneousDiscoveryNotes"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="activityTrackingMethod">Activity Tracking Method <span class="required">*</span></label>
+                    <p class="help-text">How do you keep track of activities your kids are doing or want to do?</p>
+                    <textarea id="activityTrackingMethod" name="activityTrackingMethod" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="socialPairingFrequency">Social Pairing Frequency <span class="required">*</span></label>
+                    <p class="help-text">How often do you find an activity that you'd want to do with another parent/child pair?</p>
+                    <select id="socialPairingFrequency" name="socialPairingFrequency" required>
+                        <option value="">-- Select --</option>
+                        <option value="Often">Often</option>
+                        <option value="Sometimes">Sometimes</option>
+                        <option value="Rarely">Rarely</option>
+                        <option value="Never">Never</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="socialPairingNotes">Social Pairing Notes</label>
+                    <p class="help-text">Any examples or context?</p>
+                    <textarea id="socialPairingNotes" name="socialPairingNotes"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="socialDiscoveryMethod">Social Discovery Method <span class="required">*</span></label>
+                    <p class="help-text">When you want to find other families to do activities with, how do you go about finding them?</p>
+                    <textarea id="socialDiscoveryMethod" name="socialDiscoveryMethod" required></textarea>
+                </div>
+            </div>
+
+            <!-- AFTER DEMO SECTION -->
+            <div class="section">
+                <div class="section-title">AFTER DEMO</div>
+
+                <div class="form-group">
+                    <label for="perceivedUsefulness">Perceived Usefulness <span class="required">*</span></label>
+                    <p class="help-text">On a scale of 1-10 (1=not useful, 10=extremely useful), how useful do you find what you just saw?</p>
+                    <select id="perceivedUsefulness" name="perceivedUsefulness" required>
+                        <option value="">-- Select --</option>
+                        <option value="1">1 (Not useful)</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10 (Extremely useful)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="usefulnessNotes">Usefulness Notes</label>
+                    <p class="help-text">Why that score? What made it useful or not?</p>
+                    <textarea id="usefulnessNotes" name="usefulnessNotes"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="actualUseIntent">Actual Use Intent <span class="required">*</span></label>
+                    <p class="help-text">On a scale of 1-10, do you think you would actually use something like this?</p>
+                    <select id="actualUseIntent" name="actualUseIntent" required>
+                        <option value="">-- Select --</option>
+                        <option value="1">1 (Wouldn't use it)</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10 (Definitely use it)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="useIntentNotes">Use Intent Notes</label>
+                    <p class="help-text">What would make you use it more or less?</p>
+                    <textarea id="useIntentNotes" name="useIntentNotes"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="likedFeatures">Liked Features <span class="required">*</span></label>
+                    <p class="help-text">What did you particularly like about what you saw?</p>
+                    <textarea id="likedFeatures" name="likedFeatures" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="dislikes">Dislikes/Challenges <span class="required">*</span></label>
+                    <p class="help-text">What did you particularly dislike, find challenging, or find confusing?</p>
+                    <textarea id="dislikes" name="dislikes" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="appDownloadIntent">App Download Intent <span class="required">*</span></label>
+                    <p class="help-text">If this was an app available today, would you download it?</p>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="appDownloadIntent" value="Yes" required> Yes
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="appDownloadIntent" value="Maybe" required> Maybe
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="appDownloadIntent" value="No" required> No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="appDownloadNotes">App Download Notes</label>
+                    <p class="help-text">Why or why not?</p>
+                    <textarea id="appDownloadNotes" name="appDownloadNotes"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="appAdoptionHabits">App Adoption Habits <span class="required">*</span></label>
+                    <p class="help-text">Do you typically download and try new apps, or not really?</p>
+                    <textarea id="appAdoptionHabits" name="appAdoptionHabits" required></textarea>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="buttons">
+                <button type="submit" class="btn-submit" id="submitBtn">Submit Interview Notes</button>
+                <button type="reset" class="btn-reset">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const APPS_SCRIPT_URL = 'YOUR_DEPLOYMENT_URL_HERE'; // Replace with your Apps Script deployment URL
+
+        function addKidField() {
+            const container = document.getElementById('kidsContainer');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'kids';
+            input.placeholder = `Kid ${container.children.length + 1}: [Gender] Age [#]`;
+            input.style.marginBottom = '8px';
+            container.appendChild(input);
+        }
+
+        document.getElementById('interviewForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!this.checkValidity()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const data = {
+                    name: formData.get('name'),
+                    town: formData.get('town'),
+                    kids: formData.getAll('kids').filter(k => k.trim()),
+                    currentActivityTypes: formData.get('currentActivityTypes'),
+                    currentDiscoveryMethods: formData.get('currentDiscoveryMethods'),
+                    currentInfoSources: formData.get('currentInfoSources'),
+                    discoveryFrustrations: formData.get('discoveryFrustrations'),
+                    spontaneousPlanningProcess: formData.get('spontaneousPlanningProcess'),
+                    spontaneousDiscoveryDifficulty: formData.get('spontaneousDiscoveryDifficulty'),
+                    spontaneousDiscoveryNotes: formData.get('spontaneousDiscoveryNotes'),
+                    activityTrackingMethod: formData.get('activityTrackingMethod'),
+                    socialPairingFrequency: formData.get('socialPairingFrequency'),
+                    socialPairingNotes: formData.get('socialPairingNotes'),
+                    socialDiscoveryMethod: formData.get('socialDiscoveryMethod'),
+                    perceivedUsefulness: formData.get('perceivedUsefulness'),
+                    usefulnessNotes: formData.get('usefulnessNotes'),
+                    actualUseIntent: formData.get('actualUseIntent'),
+                    useIntentNotes: formData.get('useIntentNotes'),
+                    likedFeatures: formData.get('likedFeatures'),
+                    dislikes: formData.get('dislikes'),
+                    appDownloadIntent: formData.get('appDownloadIntent'),
+                    appDownloadNotes: formData.get('appDownloadNotes'),
+                    appAdoptionHabits: formData.get('appAdoptionHabits')
+                };
+
+                // Send to Apps Script
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('interviewForm').reset();
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').innerText = '✗ Error: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+            }
+        });
+    </script>
+</body>
+</html>
