@@ -228,12 +228,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Kids (age and gender) <span class="required">*</span></label>
-                    <p class="help-text">For each child, note their age and gender (e.g., "Boy Age 6" or "Girl Age 3")</p>
-                    <div id="kidsContainer">
-                        <input type="text" name="kids" placeholder="Kid 1: [Gender] Age [#]" class="form-group-input">
-                    </div>
-                    <button type="button" onclick="addKidField()" style="width: 100%; margin-top: 8px; background: #f0f0f0; color: #333; padding: 8px; border: 1px solid #ddd;">+ Add another child</button>
+                    <label for="kids">Kids (age and gender) <span class="required">*</span></label>
+                    <p class="help-text">For each child, note their age and gender on a separate line (e.g., "Boy Age 6" or "Girl Age 3")</p>
+                    <textarea id="kids" name="kids" placeholder="Boy Age 6&#10;Girl Age 3" required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -420,16 +417,6 @@
     <script>
         const APPS_SCRIPT_URL = https://script.google.com/macros/s/AKfycbz5GQ97Hn4qr_9e30Br1GXcZ1wxIjFUvH5aJmd3HqzRGKsvP9qS8qxcVkhJCZn1pV5L/exec; // Replace with your Apps Script deployment URL
 
-        function addKidField() {
-            const container = document.getElementById('kidsContainer');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.name = 'kids';
-            input.placeholder = `Kid ${container.children.length + 1}: [Gender] Age [#]`;
-            input.style.marginBottom = '8px';
-            container.appendChild(input);
-        }
-
         document.getElementById('interviewForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -449,7 +436,7 @@
                 const data = {
                     name: formData.get('name'),
                     town: formData.get('town'),
-                    kids: formData.getAll('kids').filter(k => k.trim()),
+                    kids: formData.get('kids'),
                     currentActivityTypes: formData.get('currentActivityTypes'),
                     currentDiscoveryMethods: formData.get('currentDiscoveryMethods'),
                     currentInfoSources: formData.get('currentInfoSources'),
@@ -493,7 +480,7 @@
                     throw new Error(result.error || 'Unknown error');
                 }
             } catch (error) {
-                document.getElementById('errorMessage').innerText = '✗ Error: ' + error.message;
+                document.getElementById('errorMessage').innerText = 'Error: ' + error.message;
                 document.getElementById('errorMessage').style.display = 'block';
                 console.error('Error:', error);
             } finally {
